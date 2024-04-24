@@ -1,0 +1,79 @@
+import numpy as np
+
+# Constantes
+g = 9.81  # Accélération due à la gravité (m/s^2)
+N = 5000 # Nombre de pas de temps
+dt = 1 / N  # Intervalle de temps
+
+# Conditions initiales pour la bille
+theta = -np.pi / 2  # Position angulaire initiale (en radians)
+omega = 0  # Vitesse angulaire initiale (en rad/s)
+temps = 0
+r1 = 0.004  # Rayon de la bille (m)
+l1 = 1 - r1  # Rayon du cercle - le rayon de la bille
+
+data_t1 = [temps]
+data_theta1 = [theta]
+data_omega1 = [omega]
+
+# Définir la fonction d'accélération pour la bille
+def alpha1(theta):
+    return - (5 * g * np.sin(theta)) / (7 * l1)
+
+# Boucle de calcul des données pour la bille
+zero_crossing_index1 = None
+for i in range(N):
+    omega_n = data_omega1[i] + dt * alpha1(data_theta1[i])
+    theta_n = data_theta1[i] + dt * omega_n
+    temps_n = data_t1[i] + dt
+
+    data_omega1.append(omega_n)
+    data_theta1.append(theta_n)
+    data_t1.append(temps_n)
+
+    if theta_n * data_theta1[i] < 0 and zero_crossing_index1 is None:
+        zero_crossing_index1 = i
+
+# Calcul de la vitesse finale lorsque theta = 0 pour la bille
+vitesse_finale_bille = data_omega1[zero_crossing_index1] * l1
+
+temps_final_bille = data_t1[zero_crossing_index1]
+print("Temps final lorsque theta = 0 pour la bille :", round(temps_final_bille, 4), "secondes")
+
+print("Vitesse finale de la bille :", round(vitesse_finale_bille, 4), "m/s")
+
+# Conditions initiales pour la deuxième boule
+theta = -np.pi / 2  # Position angulaire initiale (en radians)
+omega = 0  # Vitesse angulaire initiale (en rad/s)
+temps = 0
+r2 = 0.15  # Rayon de la boule (m)
+l2 = 1 - r2  # Rayon du cercle - le rayon de la boule
+
+data_t2 = [temps]
+data_theta2 = [theta]
+data_omega2 = [omega]
+
+# Définir la fonction d'accélération pour la boule
+def alpha2(theta):
+    return - (5 * g * np.sin(theta)) / (7 * l2)
+
+# Boucle de calcul des données pour la boule
+zero_crossing_index2 = None
+for i in range(N):
+    omega_n = data_omega2[i] + dt * alpha2(data_theta2[i])
+    theta_n = data_theta2[i] + dt * omega_n
+    temps_n = data_t2[i] + dt
+
+    data_omega2.append(omega_n)
+    data_theta2.append(theta_n)
+    data_t2.append(temps_n)
+
+    if theta_n * data_theta2[i] < 0 and zero_crossing_index2 is None:
+        zero_crossing_index2 = i
+
+# Calcul de la vitesse finale lorsque theta = 0 pour la boule
+vitesse_finale_boule = data_omega2[zero_crossing_index2] * l2
+temps_final_boule = data_t2[zero_crossing_index2]
+print("Temps final lorsque theta = 0 pour la boule :", round(temps_final_boule, 4), "secondes")
+
+print("Vitesse finale de la boule :", round(vitesse_finale_boule, 4), "m/s")
